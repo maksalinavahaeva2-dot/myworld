@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Мой Мир</title>
     <style>
+        /* === СТИЛИ === */
         :root {
             --glass-bg: rgba(255,255,255,0.7);
-            --shadow: 0 8px 32px rgba(0,0,0,0.1);
-            --gold: #d4af37;
             --accent: #6c5ce7;
+            --gold: #d4af37;
             --radius: 20px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,9 +32,309 @@
             backdrop-filter: blur(10px);
         }
         .hidden { display: none !important; }
+        /* Вход */
         .login-card {
             text-align: center;
             width: 90%;
+            padding: 40px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .logo { font-size: 2.5rem; color: var(--accent); margin-bottom: 5px; }
+        .subtitle { color: #555; margin-bottom: 30px; }
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+        }
+        .btn-glow {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(108,92,231,0.4);
+        }
+        .btn-glow:hover { transform: translateY(-2px); }
+        .btn-small {
+            background: #eee;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        /* Верхняя панель */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .topbar-left { font-weight: bold; color: var(--accent); }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .username-clickable { cursor: pointer; }
+        .icon-bell { position: relative; cursor: pointer; }
+        .badge {
+            position: absolute;
+            top: -8px; right: -10px;
+            background: red; color: white;
+            border-radius: 10px; padding: 2px 6px;
+            font-size: 0.7rem;
+        }
+        /* Контент */
+        .main-content { flex: 1; overflow-y: auto; }
+        .tab { padding: 15px; height: 100%; overflow-y: auto; }
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .feed-container {
+            height: 100%;
+            background: #000;
+            color: white;
+            text-align: center;
+            padding-top: 40vh;
+        }
+        /* Нижняя панель */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: #555;
+        }
+        .nav-btn.active { background: var(--accent); color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- ЭКРАН ВХОДА -->
+    <div id="login-screen" class="screen">
+        <div class="login-card glass">
+            <h1 class="logo">🌍 Мой Мир</h1>
+            <p class="subtitle">Твой ключ — твоя роль</p>
+            <input type="text" id="login-username" placeholder="Имя" autocomplete="off">
+            <input type="password" id="login-password" placeholder="Пароль">
+            <button id="login-btn" class="btn-glow">Создать профиль</button>
+        </div>
+    </div>
+
+    <!-- ГЛАВНЫЙ ЭКРАН -->
+    <div id="app" class="screen hidden">
+        <header class="topbar">
+            <div class="topbar-left">🌍 Мой Мир</div>
+            <div class="topbar-right">
+                <span id="current-username" class="username-clickable"></span>
+                <span id="notif-icon" class="icon-bell">🔔<span id="notif-badge" class="badge hidden">0</span></span>
+                <button id="logout-btn" class="btn-icon" style="background:none;border:none;font-size:1.3rem;">🚪</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Лента (упрощённая) -->
+            <section id="tab-feed" class="tab active feed-container">
+                <div style="font-size:1.5rem;">Нет постов</div>
+            </section>
+            <!-- Остальные вкладки как заглушки -->
+            <section id="tab-groups" class="tab hidden"><div class="glass">Группы (в разработке)</div></section>
+            <section id="tab-publish" class="tab hidden"><div class="glass">Публикация (в разработке)</div></section>
+            <section id="tab-messages" class="tab hidden"><div class="glass">Сообщения (в разработке)</div></section>
+            <section id="tab-profile" class="tab hidden"><div class="glass">Профиль (в разработке)</div></section>
+            <section id="tab-notifications" class="tab hidden"><div class="glass">Уведомления (в разработке)</div></section>
+            <section id="tab-admin" class="tab hidden"><div class="glass">Админ-панель (в разработке)</div></section>
+        </main>
+
+        <nav class="bottom-nav">
+            <button data-tab="feed" class="nav-btn active">🏠</button>
+            <button data-tab="groups" class="nav-btn">👥</button>
+            <button data-tab="publish" class="nav-btn">➕</button>
+            <button data-tab="messages" class="nav-btn">💬</button>
+            <button data-tab="profile" class="nav-btn">👤</button>
+        </nav>
+    </div>
+
+    <script>
+        // === САМЫЙ ПРОСТОЙ И НАДЁЖНЫЙ СКРИПТ ===
+        (function() {
+            // 1. Очищаем localStorage, если там есть старые сломанные данные
+            try {
+                // Пытаемся прочитать старые данные – если ошибка, чистим всё
+                JSON.parse(localStorage.getItem('mw_u'));
+            } catch (e) {
+                localStorage.clear();
+            }
+
+            // 2. Загружаем данные или создаём новые
+            var users = [];
+            var posts = [];
+            var currentUser = null;
+            var creatorsCount = 0;
+
+            try {
+                users = JSON.parse(localStorage.getItem('mw_u')) || [];
+                posts = JSON.parse(localStorage.getItem('mw_p')) || [];
+                currentUser = JSON.parse(localStorage.getItem('mw_cu')) || null;
+                creatorsCount = parseInt(localStorage.getItem('mw_cc')) || 0;
+            } catch (e) {
+                localStorage.clear();
+            }
+
+            function saveData() {
+                localStorage.setItem('mw_u', JSON.stringify(users));
+                localStorage.setItem('mw_p', JSON.stringify(posts));
+                localStorage.setItem('mw_cu', JSON.stringify(currentUser));
+                localStorage.setItem('mw_cc', creatorsCount);
+            }
+
+            // 3. Функция перехода в приложение
+            function showApp(username, role) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                document.getElementById('current-username').textContent = username + ' (' + (role === 'creator' ? 'Создатель' : 'Гость') + ')';
+                // Показываем ленту
+                switchTab('feed');
+            }
+
+            // 4. Переключение вкладок
+            function switchTab(tab) {
+                var tabs = document.querySelectorAll('.tab');
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.add('hidden');
+                }
+                var navs = document.querySelectorAll('.nav-btn');
+                for (var j = 0; j < navs.length; j++) {
+                    navs[j].classList.remove('active');
+                }
+                var target = document.getElementById('tab-' + tab);
+                if (target) target.classList.remove('hidden');
+                var navTarget = document.querySelector('.nav-btn[data-tab="' + tab + '"]');
+                if (navTarget) navTarget.classList.add('active');
+            }
+
+            // 5. Кнопка «Создать профиль»
+            document.getElementById('login-btn').addEventListener('click', function() {
+                var username = document.getElementById('login-username').value.trim();
+                var password = document.getElementById('login-password').value.trim();
+                if (!username || !password) {
+                    alert('Введи имя и пароль');
+                    return;
+                }
+
+                // Ищем пользователя
+                var user = users.find(function(u) { return u.username === username; });
+                if (!user) {
+                    // Создаём нового
+                    var role = 'guest';
+                    if (password === '959506' && creatorsCount < 2) {
+                        role = 'creator';
+                        creatorsCount++;
+                    }
+                    user = {
+                        id: Date.now().toString(),
+                        username: username,
+                        password: password,
+                        role: role,
+                        premium: false,
+                        avatar: '',
+                        banUntil: null
+                    };
+                    users.push(user);
+                } else {
+                    // Проверяем пароль
+                    if (user.password !== password) {
+                        alert('Неверный пароль!');
+                        return;
+                    }
+                    // Если пароль 959506 и ещё есть место, повышаем
+                    if (password === '959506' && creatorsCount < 2 && user.role !== 'creator') {
+                        user.role = 'creator';
+                        creatorsCount++;
+                    }
+                }
+
+                // Проверка бана
+                if (user.banUntil && user.banUntil > Date.now()) {
+                    var hours = Math.ceil((user.banUntil - Date.now()) / 3600000);
+                    alert('Ты забанен ещё на ' + hours + ' ч.');
+                    return;
+                }
+
+                // Сохраняем сессию
+                currentUser = { id: user.id, username: user.username, role: user.role };
+                saveData();
+                // Показываем главный экран
+                showApp(user.username, user.role);
+            });
+
+            // 6. Кнопка «Выйти»
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                currentUser = null;
+                saveData();
+                document.getElementById('app').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+            });
+
+            // 7. Навигация по нижней панели
+            var navButtons = document.querySelectorAll('.nav-btn');
+            for (var k = 0; k < navButtons.length; k++) {
+                navButtons[k].addEventListener('click', function(e) {
+                    switchTab(this.dataset.tab);
+                });
+            }
+
+            // 8. Клик по имени в шапке → профиль (заглушка)
+            document.getElementById('current-username').addEventListener('click', function() {
+                switchTab('profile');
+            });
+            document.getElementById('notif-icon').addEventListener('click', function() {
+                switchTab('notifications');
+            });
+
+            // 9. Автовход, если сессия сохранена
+            if (currentUser) {
+                var savedUser = users.find(function(u) { return u.id === currentUser.id; });
+                if (savedUser && (!savedUser.banUntil || savedUser.banUntil <= Date.now())) {
+                    showApp(savedUser.username, savedUser.role);
+                } else {
+                    currentUser = null;
+                    saveData();
+                }
+            }
+        })();
+    </script>
+</body>
+    </html>            width: 90%;
             padding: 40px 20px;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
